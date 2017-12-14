@@ -2,6 +2,7 @@
 
 namespace Jmikola\AutoLogin\Http\Firewall;
 
+use App\Security\Token\AnonymousUserToken;
 use Jmikola\AutoLogin\AutoLoginEvents;
 use Jmikola\AutoLogin\Authentication\Token\AutoLoginToken;
 use Jmikola\AutoLogin\Event\AlreadyAuthenticatedEvent;
@@ -78,7 +79,8 @@ class AutoLoginListener implements ListenerInterface
          * We will dispatch an event with the token parameter so that a listener
          * may track its usage.
          */
-        if (null !== $this->securityContext->getToken()) {
+        $existingToken = $this->securityContext->getToken();
+        if (null !== $existingToken && !$existingToken instanceof AnonymousUserToken) {
             if (null !== $this->dispatcher) {
                 $event = new AlreadyAuthenticatedEvent($tokenParam);
                 $this->dispatcher->dispatch(AutoLoginEvents::ALREADY_AUTHENTICATED, $event);
