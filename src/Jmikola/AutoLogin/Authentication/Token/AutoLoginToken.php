@@ -68,4 +68,19 @@ class AutoLoginToken extends AbstractToken
         list($this->key, $this->providerKey, $parentStr) = unserialize($str);
         parent::unserialize($parentStr);
     }
+    
+    public function __serialize(): array
+    {
+        return array(
+            $this->key,
+            $this->providerKey,
+            parent::__serialize(),
+        );
+    }
+
+    public function __unserialize(array $data): void
+    {
+        list($this->key, $this->providerKey, $parentStr) = $data;
+        parent::__unserialize($parentStr);
+    }
 }
